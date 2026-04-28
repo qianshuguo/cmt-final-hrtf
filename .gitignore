@@ -7,19 +7,24 @@ __pycache__/
 venv/
 env/
 
-# Dataset files
+# Dataset
 dataset/
 
-# Docs build/output
+# Docs
 docs/
 
-# OS files
-.DS_Store
-Thumbs.db
+# Claude files/folders
+.claude/
+claude/
+*claude*
 
 # IDE
 .vscode/
 .idea/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
