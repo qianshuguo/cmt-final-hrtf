@@ -1,4 +1,4 @@
-name: hrtf-project
+name: cmt-hrtf
 channels:
   - conda-forge
   - defaults
