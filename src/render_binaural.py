@@ -24,9 +24,10 @@ import os
 ROOT = Path(__file__).parent.parent
 
 # ── paths ─────────────────────────────────────────────────────────────────────
-CIPIC_ROOT = ROOT / "data/cipic-hrtf-database-master/standard_hrir_database"
-OUT_DIR = ROOT / "outputs/stimuli"
-SR = 44100
+CIPIC_ROOT  = ROOT / "data/cipic-hrtf-database-master/standard_hrir_database"
+PROCESSED   = ROOT / "data/source_audio/processed"
+OUT_DIR     = ROOT / "outputs/stimuli"
+SR          = 44100
 
 DATASETS = {
     "cipic_human":  CIPIC_ROOT / "subject_003/hrir_final.mat",
@@ -76,36 +77,40 @@ def normalize_stereo(left, right, headroom_db=-3.0):
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    signal = make_test_signal()
-    print(f"Test signal: {len(signal)/SR*1000:.0f} ms, {SR} Hz\n")
 
-    for dataset_name, mat_path in DATASETS.items():
-        mat = scipy.io.loadmat(mat_path)
-        hrir_l = mat["hrir_l"]  # (25, 50, 200)
-        hrir_r = mat["hrir_r"]
-        print(f"Dataset: {dataset_name}  ({mat_path})")
+    sources = sorted(PROCESSED.glob("*.wav"))
+    if not sources:
+        print(f"No files found in {PROCESSED} — run prepare_source.py first.")
+        return
 
-        for cond_name, el_idx, description in CONDITIONS:
-            ir_l = hrir_l[AZ_IDX, el_idx, :].astype(np.float64)
-            ir_r = hrir_r[AZ_IDX, el_idx, :].astype(np.float64)
+    total = 0
+    for src_path in sources:
+        signal, file_sr = sf.read(src_path, dtype="float32")
+        assert file_sr == SR, f"Expected {SR} Hz, got {file_sr} in {src_path.name}"
+        print(f"Source: {src_path.name}  [{len(signal)/SR:.1f}s  mono]")
 
-            left  = convolve(signal.astype(np.float64), ir_l)
-            right = convolve(signal.astype(np.float64), ir_r)
-            left, right = normalize_stereo(left, right)
+        for dataset_name, mat_path in DATASETS.items():
+            mat = scipy.io.loadmat(mat_path)
+            hrir_l = mat["hrir_l"]  # (25, 50, 200)
+            hrir_r = mat["hrir_r"]
 
-            stereo = np.column_stack([left, right])
-            fname = OUT_DIR / f"{dataset_name}_{cond_name}.wav"
-            sf.write(fname, stereo, SR, subtype="PCM_16")
-            print(f"  ✔ {fname}  [{description}]")
+            for cond_name, el_idx, description in CONDITIONS:
+                ir_l = hrir_l[AZ_IDX, el_idx, :].astype(np.float64)
+                ir_r = hrir_r[AZ_IDX, el_idx, :].astype(np.float64)
+
+                left  = convolve(signal.astype(np.float64), ir_l)
+                right = convolve(signal.astype(np.float64), ir_r)
+                left, right = normalize_stereo(left, right)
+
+                stereo = np.column_stack([left, right])
+                fname = OUT_DIR / f"{src_path.stem}__{dataset_name}_{cond_name}.wav"
+                sf.write(fname, stereo, SR, subtype="PCM_16")
+                print(f"  ✔ {fname.name}")
+                total += 1
 
         print()
 
-    print(f"Done — {len(DATASETS) * len(CONDITIONS)} stimuli written to '{OUT_DIR}/'")
-    print("\nFile summary:")
-    for f in sorted(os.listdir(OUT_DIR)):
-        path = OUT_DIR / f
-        info = sf.info(path)
-        print(f"  {f}  {info.duration*1000:.0f} ms  {info.channels}ch  {info.samplerate} Hz")
+    print(f"Done — {total} stimuli written to '{OUT_DIR}'")
 
 
 if __name__ == "__main__":

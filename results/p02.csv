@@ -1,0 +1,2 @@
+participant,trial,dataset,elevation_deg,elevation_label,response,correct,rt_s
+p02,1,CIPIC Human,0,middle,middle,True,0.0
