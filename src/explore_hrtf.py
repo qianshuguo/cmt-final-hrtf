@@ -1,9 +1,12 @@
+from pathlib import Path
 import scipy.io
 import numpy as np
 import matplotlib.pyplot as plt
 
+ROOT = Path(__file__).parent.parent
+
 SUBJECT = "subject_003"
-MAT_PATH = f"dataset/cipic-hrtf-database-master/standard_hrir_database/{SUBJECT}/hrir_final.mat"
+MAT_PATH = ROOT / "dataset/cipic-hrtf-database-master/standard_hrir_database" / SUBJECT / "hrir_final.mat"
 
 mat = scipy.io.loadmat(MAT_PATH)
 
@@ -47,6 +50,7 @@ axes[1].set_title("Right Ear HRIR")
 axes[1].axhline(0, color="gray", linewidth=0.5)
 
 plt.tight_layout()
-plt.savefig("hrtf_verification.png", dpi=150)
-print("\n✔ Plot saved to hrtf_verification.png")
+out_path = ROOT / "outputs/figures/hrtf_verification.png"
+plt.savefig(out_path, dpi=150)
+print(f"\n✔ Plot saved to {out_path}")
 print("✔ HRTF data read successfully — Phase 1 complete!")

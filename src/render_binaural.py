@@ -14,20 +14,23 @@ CIPIC elevation grid: el = -45 + i*5.625°
   el_idx=45 → 208.125°  (target rear +30°)
 """
 
+from pathlib import Path
 import numpy as np
 import scipy.io
 import scipy.signal
 import soundfile as sf
 import os
 
+ROOT = Path(__file__).parent.parent
+
 # ── paths ─────────────────────────────────────────────────────────────────────
-CIPIC_ROOT = "dataset/cipic-hrtf-database-master/standard_hrir_database"
-OUT_DIR = "stimuli"
+CIPIC_ROOT = ROOT / "dataset/cipic-hrtf-database-master/standard_hrir_database"
+OUT_DIR = ROOT / "outputs/stimuli"
 SR = 44100
 
 DATASETS = {
-    "cipic_human":  f"{CIPIC_ROOT}/subject_003/hrir_final.mat",
-    "cipic_kemar":  f"{CIPIC_ROOT}/subject_021/hrir_final.mat",
+    "cipic_human":  CIPIC_ROOT / "subject_003/hrir_final.mat",
+    "cipic_kemar":  CIPIC_ROOT / "subject_021/hrir_final.mat",
 }
 
 # azimuth index 12 → lateral = 0° (median plane, covers both front and rear via polar)
@@ -35,7 +38,7 @@ AZ_IDX = 12
 
 # target rear elevations → nearest CIPIC polar-angle index
 CONDITIONS = [
-    ("rear_neg30", 35, "Rear –30° (polar 151.875°)"),
+    ("rear_neg30", 35, "Rear -30° (polar 151.875°)"),
     ("rear_0",     40, "Rear   0° (polar 180.000°)"),
     ("rear_pos30", 45, "Rear +30° (polar 208.125°)"),
 ]
@@ -72,7 +75,7 @@ def normalize_stereo(left, right, headroom_db=-3.0):
 
 
 def main():
-    os.makedirs(OUT_DIR, exist_ok=True)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     signal = make_test_signal()
     print(f"Test signal: {len(signal)/SR*1000:.0f} ms, {SR} Hz\n")
 
@@ -91,7 +94,7 @@ def main():
             left, right = normalize_stereo(left, right)
 
             stereo = np.column_stack([left, right])
-            fname = f"{OUT_DIR}/{dataset_name}_{cond_name}.wav"
+            fname = OUT_DIR / f"{dataset_name}_{cond_name}.wav"
             sf.write(fname, stereo, SR, subtype="PCM_16")
             print(f"  ✔ {fname}  [{description}]")
 
@@ -100,7 +103,7 @@ def main():
     print(f"Done — {len(DATASETS) * len(CONDITIONS)} stimuli written to '{OUT_DIR}/'")
     print("\nFile summary:")
     for f in sorted(os.listdir(OUT_DIR)):
-        path = os.path.join(OUT_DIR, f)
+        path = OUT_DIR / f
         info = sf.info(path)
         print(f"  {f}  {info.duration*1000:.0f} ms  {info.channels}ch  {info.samplerate} Hz")
 

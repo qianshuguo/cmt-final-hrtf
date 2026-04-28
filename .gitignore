@@ -32,5 +32,9 @@ claude/
 .DS_Store
 Thumbs.db
 
+# Generated outputs (re-runnable)
+outputs/figures/*.png
+outputs/stimuli/*.wav
+
 # Logs
 *.log
