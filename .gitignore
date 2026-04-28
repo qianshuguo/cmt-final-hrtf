@@ -13,8 +13,11 @@ env/bin/
 env/include/
 env/pyvenv.cfg
 
-# Dataset
+# Dataset (HRTF database — large binary files)
 data/
+
+# Assets (audio source files)
+assets/
 
 # Docs
 docs/

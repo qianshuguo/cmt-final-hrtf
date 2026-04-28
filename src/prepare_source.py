@@ -13,8 +13,8 @@ import scipy.signal
 import soundfile as sf
 
 ROOT      = Path(__file__).parent.parent
-SRC_DIR   = ROOT / "data/source_audio/raw"
-OUT_DIR   = ROOT / "data/source_audio/processed"
+SRC_DIR   = ROOT / "assets/raw"
+OUT_DIR   = ROOT / "assets/processed"
 SR        = 44100
 DURATION  = 15.0
 FADE      = 0.5

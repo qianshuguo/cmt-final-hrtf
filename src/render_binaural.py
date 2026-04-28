@@ -25,7 +25,7 @@ ROOT = Path(__file__).parent.parent
 
 # ── paths ─────────────────────────────────────────────────────────────────────
 CIPIC_ROOT  = ROOT / "data/cipic-hrtf-database-master/standard_hrir_database"
-PROCESSED   = ROOT / "data/source_audio/processed"
+PROCESSED   = ROOT / "assets/processed"
 OUT_DIR     = ROOT / "outputs/stimuli"
 SR          = 44100
 
