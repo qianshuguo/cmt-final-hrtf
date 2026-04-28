@@ -1,0 +1,19 @@
+name: hrtf-project
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13
+  # ── core scientific stack ──────────────────────────────────────────────────
+  - numpy>=2.1
+  - scipy>=1.15
+  - matplotlib>=3.10
+  # ── audio I/O ─────────────────────────────────────────────────────────────
+  - libsndfile          # C backend required by soundfile
+  - pip
+  - pip:
+      - soundfile>=0.13  # WAV read/write (wraps libsndfile)
+      - pygame>=2.6      # Phase 4 – audio playback in listening-test GUI
+  # ── data analysis & plotting (Phase 5) ────────────────────────────────────
+  - pandas>=2.2
+  - seaborn>=0.13

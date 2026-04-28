@@ -1,0 +1,18 @@
+# pip requirements (alternative to conda environment.yml)
+# Usage: pip install -r env/requirements.txt
+
+# ── core scientific stack ──────────────────────────────────────────────────
+numpy>=2.1
+scipy>=1.15
+matplotlib>=3.10
+
+# ── audio I/O ─────────────────────────────────────────────────────────────
+soundfile>=0.13      # WAV read/write
+pygame>=2.6          # Phase 4 – audio playback in listening-test GUI
+
+# ── data loading ──────────────────────────────────────────────────────────
+# (scipy.io.loadmat handles .mat files, no extra package needed)
+
+# ── data analysis & plotting (Phase 5) ────────────────────────────────────
+pandas>=2.2
+seaborn>=0.13
