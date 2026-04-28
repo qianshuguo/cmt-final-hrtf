@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).parent.parent
 
 SUBJECT = "subject_003"
-MAT_PATH = ROOT / "dataset/cipic-hrtf-database-master/standard_hrir_database" / SUBJECT / "hrir_final.mat"
+MAT_PATH = ROOT / "data/cipic-hrtf-database-master/standard_hrir_database" / SUBJECT / "hrir_final.mat"
 
 mat = scipy.io.loadmat(MAT_PATH)
 
