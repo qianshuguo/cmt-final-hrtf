@@ -6,9 +6,9 @@ randomised order, collecting elevation responses.
 Results are saved to results/<participant_id>.csv.
 
 Controls during each trial:
-  1  →  Down  (-51°)
+  1  →  Up    (+51°)
   2  →  Middle (0°)
-  3  →  Up    (+51°)
+  3  →  Down  (-51°)
   R  →  Replay current stimulus
   Q  →  Quit (partial results are saved)
 """
@@ -54,7 +54,7 @@ def build_stimuli() -> list[dict]:
                     })
     return stimuli
 
-RESPONSE_KEYS = {"1": "down", "2": "middle", "3": "up"}
+RESPONSE_KEYS = {"1": "up", "2": "middle", "3": "down"}
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -143,9 +143,9 @@ def main():
     print("Each sound comes from BEHIND you at different heights.")
     print()
     print("After each sound, press:")
-    print("  1 → Down  (below ear level)")
+    print("  1 → Up    (above ear level)")
     print("  2 → Middle (ear level)")
-    print("  3 → Up    (above ear level)")
+    print("  3 → Down  (below ear level)")
     print()
     print("Press R to replay a sound before answering.")
     print("Press Q at any time to quit and save partial results.")
@@ -173,9 +173,9 @@ def main():
                 print("-" * 40)
                 print("Listening…  (headphones recommended)")
                 print()
-                print("  1 → Down    (below ear level)")
+                print("  1 → Up      (above ear level)")
                 print("  2 → Middle  (ear level)")
-                print("  3 → Up      (above ear level)")
+                print("  3 → Down    (below ear level)")
                 print()
                 print("  R → Replay    Q → Quit")
                 print()
@@ -197,7 +197,7 @@ def main():
 
                 # audio ended without a valid keypress — wait for answer
                 while True:
-                    key2 = get_keypress("Your answer  [1=Down  2=Middle  3=Up  R=Replay  Q=Quit]: ")
+                    key2 = get_keypress("Your answer  [1=Up  2=Middle  3=Down  R=Replay  Q=Quit]: ")
                     if key2 == "q":
                         print("\nQuitting — partial results saved.")
                         fh.flush()

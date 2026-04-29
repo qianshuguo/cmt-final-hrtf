@@ -65,9 +65,9 @@ Participants hear each stimulus over headphones and identify the perceived eleva
 
 | Key | Response |
 |-----|----------|
-| `1` | Down (below ear level) |
+| `1` | Up (above ear level) |
 | `2` | Middle (ear level) |
-| `3` | Up (above ear level) |
+| `3` | Down (below ear level) |
 | `R` | Replay |
 | `Q` | Quit (partial results saved) |
 
