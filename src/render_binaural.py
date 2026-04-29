@@ -5,13 +5,13 @@ Produces 6 stereo WAV stimuli: 2 datasets × 3 rear elevations.
 Coordinate mapping (CIPIC interaural-polar):
   lateral angle = 0°  (az_idx=12) → median plane → front OR rear depends on polar
   polar angle 180°    → directly rear, same horizontal plane
-  polar angle 150°    → rear, ~30° below horizon
-  polar angle 210°    → rear, ~30° above horizon
+  polar angle <180°   → rear, below horizon
+  polar angle >180°   → rear, above horizon
 
 CIPIC elevation grid: el = -45 + i*5.625°
-  el_idx=35 → 151.875°  (target rear –30°)
+  el_idx=31 → 129.375°  (target rear –51°)
   el_idx=40 → 180.000°  (target rear   0°)
-  el_idx=45 → 208.125°  (target rear +30°)
+  el_idx=49 → 230.625°  (target rear +51°)
 """
 
 from pathlib import Path
@@ -39,9 +39,9 @@ AZ_IDX = 12
 
 # target rear elevations → nearest CIPIC polar-angle index
 CONDITIONS = [
-    ("rear_neg30", 35, "Rear -30° (polar 151.875°)"),
+    ("rear_neg51", 31, "Rear -51° (polar 129.375°)"),
     ("rear_0",     40, "Rear   0° (polar 180.000°)"),
-    ("rear_pos30", 45, "Rear +30° (polar 208.125°)"),
+    ("rear_pos51", 49, "Rear +51° (polar 230.625°)"),
 ]
 
 # ── test signal: 500 ms pink-ish broadband noise with 5 ms cosine fade ────────

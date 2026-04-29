@@ -6,9 +6,9 @@ randomised order, collecting elevation responses.
 Results are saved to results/<participant_id>.csv.
 
 Controls during each trial:
-  1  →  Down  (-30°)
+  1  →  Down  (-51°)
   2  →  Middle (0°)
-  3  →  Up    (+30°)
+  3  →  Up    (+51°)
   R  →  Replay current stimulus
   Q  →  Quit (partial results are saved)
 """
@@ -27,7 +27,7 @@ ROOT = Path(__file__).parent.parent
 STIMULI_DIR = ROOT / "outputs/stimuli"
 RESULTS_DIR = ROOT / "results"
 
-ELEVATION_MAP = {"neg30": ("down", -30), "0": ("middle", 0), "pos30": ("up", 30)}
+ELEVATION_MAP = {"neg51": ("down", -51), "0": ("middle", 0), "pos51": ("up", 51)}
 DATASET_MAP   = {"cipic_human": "CIPIC Human", "cipic_kemar": "CIPIC KEMAR"}
 
 

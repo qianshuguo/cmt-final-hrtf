@@ -53,9 +53,9 @@ How does the choice of HRTF dataset (human vs. KEMAR dummy head) affect auditory
 
 - **Azimuth:** lateral = 0° (median plane, rear positions)
 - **Elevation (CIPIC polar angle):**
-  - Rear −30° → polar index 35 (≈151.875°)
+  - Rear −51° → polar index 31 (≈129.375°)
   - Rear   0° → polar index 40 (180.000°)
-  - Rear +30° → polar index 45 (≈208.125°)
+  - Rear +51° → polar index 49 (≈230.625°)
 
 Each source audio file produces **6 stimuli** (2 datasets × 3 elevations).
 
@@ -110,7 +110,7 @@ Convolves each processed source with HRIRs from both CIPIC subjects at all three
 
 ```
 {source}__{dataset}_{condition}.wav
-# e.g. piano__cipic_human_rear_neg30.wav
+# e.g. electric_guitar__cipic_human_rear_neg51.wav
 ```
 
 ### 4. Run the listening experiment
@@ -127,7 +127,7 @@ Enter a participant ID when prompted (e.g. `p01`). Results are saved to `results
 | `trial` | Trial number |
 | `source` | Source audio filename stem |
 | `dataset` | CIPIC Human or CIPIC KEMAR |
-| `elevation_deg` | Ground-truth elevation (−30, 0, +30) |
+| `elevation_deg` | Ground-truth elevation (−51, 0, +51) |
 | `elevation_label` | Ground-truth label (down / middle / up) |
 | `response` | Participant response |
 | `correct` | Boolean |
