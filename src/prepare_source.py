@@ -28,6 +28,11 @@ def prepare(path: Path, target_sr=SR, duration_s=DURATION, fade_s=FADE) -> np.nd
     if sr != target_sr:
         sig = scipy.signal.resample(sig, int(len(sig) * target_sr / sr))
 
+    # trim leading silence (threshold: -60 dBFS)
+    threshold = 10 ** (-60 / 20)
+    onset = np.argmax(np.abs(sig) > threshold)
+    sig = sig[onset:]
+
     target_n = int(duration_s * target_sr)
     if len(sig) >= target_n:
         sig = sig[:target_n]
