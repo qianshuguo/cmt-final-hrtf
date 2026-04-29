@@ -1,3 +1,13 @@
 participant,trial,source,dataset,elevation_deg,elevation_label,response,correct,rt_s
-p01,1,solo_violin,CIPIC KEMAR,-30,down,middle,False,9.671
-p01,2,solo_violin,CIPIC Human,-30,down,middle,False,3.122
+p01,1,electric_guitar,CIPIC Human,51,up,up,True,5.355
+p01,2,solo_violin,CIPIC KEMAR,51,up,up,True,1.456
+p01,3,electric_guitar,CIPIC Human,-51,down,up,False,1.326
+p01,4,electric_guitar,CIPIC KEMAR,-51,down,middle,False,3.161
+p01,5,solo_violin,CIPIC KEMAR,-51,down,up,False,6.85
+p01,6,electric_guitar,CIPIC Human,0,middle,up,False,2.035
+p01,7,electric_guitar,CIPIC KEMAR,51,up,middle,False,4.033
+p01,8,solo_violin,CIPIC KEMAR,0,middle,down,False,2.932
+p01,9,electric_guitar,CIPIC KEMAR,0,middle,down,False,4.051
+p01,10,solo_violin,CIPIC Human,0,middle,up,False,7.216
+p01,11,solo_violin,CIPIC Human,-51,down,up,False,4.691
+p01,12,solo_violin,CIPIC Human,51,up,middle,False,4.655
