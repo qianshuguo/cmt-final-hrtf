@@ -1,173 +1,162 @@
-# README
+# How Do Different HRTF Datasets Affect Rear Spatial Localization?
 
-## Project Title
-How Do Different HRTF Datasets Affect Rear Spatial Localization?
+Individual project for Colloquy in Music Technology.
 
 ## Overview
-This project studies how different HRTF datasets influence auditory perception in rear sound localization.
 
-HRTF (Head-Related Transfer Function) describes how sound is filtered by the head, ears, and body before reaching the ears. Different datasets are created using different measurement methods, subjects, or dummy heads. These differences may affect how listeners perceive sounds coming from behind.
+This project compares two subjects from the CIPIC HRTF database — a human participant (subject 003) and a KEMAR dummy head (subject 021) — to assess how dataset choice affects listeners' ability to identify the elevation of sounds coming from behind them.
 
-This project compares several HRTF datasets by rendering binaural audio and testing listener perception.
+Source audio is convolved with CIPIC HRIRs at three rear elevations, then played back in a blind randomized listening test. Responses are recorded as CSV for offline analysis.
 
 ## Research Question
-How do different HRTF datasets (representing different measurement methodologies) affect auditory perception in rear spatial localization?
 
-## Objectives
-- Compare 2–3 public HRTF datasets
-- Render binaural audio using the same source sound
-- Focus on rear sound positions
-- Test listener accuracy in localization tasks
-- Analyze which dataset performs better
+How does the choice of HRTF dataset (human vs. KEMAR dummy head) affect auditory elevation perception for rear sound sources?
 
 ---
 
-## Phase 1: Prepare HRTF Data
+## Repository Structure
 
-### Selected Datasets
-- :contentReference[oaicite:0]{index=0} (1 subject)
-- :contentReference[oaicite:1]{index=1}
-- Optional: :contentReference[oaicite:2]{index=2}
-
-### Tasks
-- Download SOFA files
-- Load files in MATLAB or Python
-- Extract left/right ear impulse responses
-
-### Goal
-Successfully read HRTF impulse responses.
-
----
-
-## Phase 2: Binaural Rendering
-
-Convert mono audio into stereo binaural audio using convolution.
-
-### Process
-For each sound direction:
-
-- Left channel = signal * HRTF\_L  
-- Right channel = signal * HRTF\_R
-
-### Input Audio
-Use short test sounds such as:
-
-- White noise
-- Click sound
-- Speech sample
-
-### Output
-Stereo audio files for:
-
-- Different datasets
-- Different rear directions
+```
+.
+├── src/
+│   ├── prepare_source.py     # Step 1 – preprocess raw audio
+│   ├── explore_hrtf.py       # (optional) visualize CIPIC HRIRs
+│   ├── render_binaural.py    # Step 2 – convolve audio with HRTFs
+│   └── run_experiment.py     # Step 3 – run listening test
+├── assets/
+│   ├── raw/                  # place raw audio files here
+│   └── processed/            # output of prepare_source.py
+├── data/
+│   └── cipic-hrtf-database-master/
+│       └── standard_hrir_database/   # CIPIC .mat files
+├── outputs/
+│   ├── stimuli/              # rendered binaural WAV files
+│   └── figures/              # HRIR verification plots
+├── results/                  # per-participant CSV files
+└── env/
+    ├── requirements.txt
+    └── environment.yml
+```
 
 ---
 
-## Phase 3: Experimental Conditions
+## Experimental Design
 
-### Fixed Direction
-- Azimuth = 180° (rear)
+### HRTF Datasets
 
-### Elevation Conditions
-- -30°
-- 0°
-- +30°
+| Condition | CIPIC Subject | Description |
+|-----------|---------------|-------------|
+| A | subject_003 | Human participant |
+| B | subject_021 | KEMAR dummy head |
 
-### Dataset Conditions
-- Dataset A: CIPIC
-- Dataset B: KEMAR
-- Dataset C: IRCAM (optional)
+### Stimulus Conditions
 
-### Total Stimuli
-- 2 datasets × 3 elevations = 6 samples  
-or  
-- 3 datasets × 3 elevations = 9 samples
+- **Azimuth:** lateral = 0° (median plane, rear positions)
+- **Elevation (CIPIC polar angle):**
+  - Rear −30° → polar index 35 (≈151.875°)
+  - Rear   0° → polar index 40 (180.000°)
+  - Rear +30° → polar index 45 (≈208.125°)
 
----
+Each source audio file produces **6 stimuli** (2 datasets × 3 elevations).
 
-## Phase 4: Listening Test
+### Listening Task
 
-### Participants
-- Self + 2 to 5 classmates
+Participants hear each stimulus over headphones and identify the perceived elevation:
 
-### Task Option 1 (Recommended)
-Identify elevation:
+| Key | Response |
+|-----|----------|
+| `1` | Down (below ear level) |
+| `2` | Middle (ear level) |
+| `3` | Up (above ear level) |
+| `R` | Replay |
+| `Q` | Quit (partial results saved) |
 
-- Up
-- Middle
-- Down
-
-### Task Option 2
-Identify direction:
-
-- Front
-- Back
-
-### Data Collection
-For each trial record:
-
-- Ground truth location
-- Listener response
+Trials are randomized per participant. Reaction time is recorded from playback start.
 
 ---
 
-## Phase 5: Analysis
+## Usage
 
-### Metrics
+### 1. Install dependencies
 
-#### Accuracy
-Correct responses for each dataset.
+```bash
+pip install -r env/requirements.txt
+# or
+conda env create -f env/environment.yml
+```
 
-#### Confusion Rate
-Check common mistakes such as:
+### 2. Prepare source audio
 
-- Up heard as middle
-- Rear heard as front
+Place audio files (`.wav`, `.mp3`, `.aiff`, `.flac`, `.ogg`) in `assets/raw/`, then run:
 
-### Visualization
-- Bar chart for accuracy
-- Confusion matrix (optional)
+```bash
+python src/prepare_source.py
+```
+
+This converts each file to **mono, 44 100 Hz, 15 s** with:
+- Leading silence trimmed (threshold: −60 dBFS)
+- 0.5 s cosine fade-in and fade-out
+- Peak normalization
+
+Output goes to `assets/processed/`.
+
+### 3. Render binaural stimuli
+
+```bash
+python src/render_binaural.py
+```
+
+Convolves each processed source with HRIRs from both CIPIC subjects at all three rear elevations. Output WAVs are written to `outputs/stimuli/` using the naming convention:
+
+```
+{source}__{dataset}_{condition}.wav
+# e.g. piano__cipic_human_rear_neg30.wav
+```
+
+### 4. Run the listening experiment
+
+```bash
+python src/run_experiment.py
+```
+
+Enter a participant ID when prompted (e.g. `p01`). Results are saved to `results/<participant_id>.csv` with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| `participant` | Participant ID |
+| `trial` | Trial number |
+| `source` | Source audio filename stem |
+| `dataset` | CIPIC Human or CIPIC KEMAR |
+| `elevation_deg` | Ground-truth elevation (−30, 0, +30) |
+| `elevation_label` | Ground-truth label (down / middle / up) |
+| `response` | Participant response |
+| `correct` | Boolean |
+| `rt_s` | Reaction time in seconds |
+
+### 5. (Optional) Explore HRTF data
+
+```bash
+python src/explore_hrtf.py
+```
+
+Prints HRIR metadata and saves a verification plot to `outputs/figures/hrtf_verification.png`.
 
 ---
 
-## Phase 6: Final Report Structure
+## Dependencies
 
-1. Introduction  
-2. Background (HRTF, spectral cues)  
-3. Methodology  
-4. Results  
-5. Discussion  
-6. Conclusion
+| Package | Purpose |
+|---------|---------|
+| numpy / scipy | Signal processing, FFT convolution |
+| soundfile | WAV read / write |
+| pygame | Audio playback in listening test |
+| pandas / seaborn | Results analysis and plotting |
+| matplotlib | HRIR visualization |
 
----
-
-## Tools
-
-### Python Libraries
-- numpy
-- scipy
-- soundfile
-- pysofaconventions
-- matplotlib
-
-### MATLAB
-- SOFA API
-- Signal Processing Toolbox
+CIPIC `.mat` files are loaded directly with `scipy.io.loadmat` — no additional SOFA library required.
 
 ---
 
 ## Expected Outcome
-Different HRTF datasets may produce different rear localization performance because of differences in:
 
-- Measurement technique
-- Ear shape representation
-- Subject specificity
-- Spectral detail
-
-This project helps understand how dataset choice impacts spatial audio perception.
-
----
-
-## Author
-Individual Project for Colloquy in Music Technology
+Human and KEMAR HRTFs encode elevation cues differently due to differences in pinna shape and measurement conditions. The experiment tests whether these differences translate to measurable changes in listeners' elevation identification accuracy for rear sound sources.
