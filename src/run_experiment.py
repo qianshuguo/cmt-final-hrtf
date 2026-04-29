@@ -62,27 +62,63 @@ def clear():
     os.system("clear" if os.name == "posix" else "cls")
 
 
-def play_wav(path: str):
+def _read_raw_char() -> str:
+    """Read one character in raw mode (Unix only)."""
+    import tty, termios
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    return ch.lower()
+
+
+def play_interruptible(path: str) -> tuple[str | None, float]:
+    """
+    Play audio and listen for keypresses simultaneously.
+    Returns (key, rt_s) where key is the pressed key or None if audio
+    ended before any valid key was pressed.  rt_s is measured from
+    playback start.
+    """
     pygame.mixer.music.load(path)
     pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy():
-        time.sleep(0.05)
+    t_start = time.time()
+
+    try:
+        import select as _select, tty, termios
+        fd = sys.stdin.fileno()
+        old = termios.tcgetattr(fd)
+        key = None
+        try:
+            tty.setraw(fd)
+            while pygame.mixer.music.get_busy():
+                rlist, _, _ = _select.select([sys.stdin], [], [], 0.05)
+                if rlist:
+                    ch = sys.stdin.read(1).lower()
+                    if ch in ("1", "2", "3", "r", "q"):
+                        pygame.mixer.music.stop()
+                        key = ch
+                        break
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old)
+    except (ImportError, Exception):
+        # Windows / IDE fallback: wait for audio to finish
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.05)
+        key = None
+
+    rt = round(time.time() - t_start, 3)
+    return key, rt
 
 
 def get_keypress(prompt: str) -> str:
     """Read a single character from stdin (cross-platform, no Enter needed)."""
     print(prompt, end="", flush=True)
     try:
-        import tty, termios
-        fd = sys.stdin.fileno()
-        old = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old)
-    except (ImportError, termios.error):
-        # fallback for environments without tty (Windows, IDE consoles)
+        ch = _read_raw_char()
+    except (ImportError, Exception):
         ch = input().strip()[:1]
     print(ch)  # echo
     return ch.lower()
@@ -131,16 +167,20 @@ def main():
         writer.writeheader()
 
         for i, trial in enumerate(trials, start=1):
-            clear()
-            print(f"Trial {i} / {len(trials)}")
-            print("-" * 40)
-            print("Playing sound…  (headphones recommended)")
-            print()
+            while True:  # replay loop
+                clear()
+                print(f"Trial {i} / {len(trials)}")
+                print("-" * 40)
+                print("Listening…  (headphones recommended)")
+                print()
+                print("  1 → Down    (below ear level)")
+                print("  2 → Middle  (ear level)")
+                print("  3 → Up      (above ear level)")
+                print()
+                print("  R → Replay    Q → Quit")
+                print()
 
-            play_wav(trial["path"])
-
-            while True:
-                key = get_keypress("Your answer  [1=Down  2=Middle  3=Up  R=Replay  Q=Quit]: ")
+                key, rt = play_interruptible(trial["path"])
 
                 if key == "q":
                     print("\nQuitting — partial results saved.")
@@ -149,18 +189,30 @@ def main():
                     return
 
                 if key == "r":
-                    print("Replaying…")
-                    play_wav(trial["path"])
-                    continue
+                    continue  # replay
 
                 if key in RESPONSE_KEYS:
+                    print(f"\n  Pressed: {key}")
                     break
 
-                print("  Invalid key — please press 1, 2, 3, R, or Q.")
+                # audio ended without a valid keypress — wait for answer
+                while True:
+                    key2 = get_keypress("Your answer  [1=Down  2=Middle  3=Up  R=Replay  Q=Quit]: ")
+                    if key2 == "q":
+                        print("\nQuitting — partial results saved.")
+                        fh.flush()
+                        pygame.mixer.quit()
+                        return
+                    if key2 == "r":
+                        break  # break inner → outer loop replays
+                    if key2 in RESPONSE_KEYS:
+                        key = key2
+                        break
+                    print("  Invalid key — please press 1, 2, 3, R, or Q.")
+                if key2 != "r" and key in RESPONSE_KEYS:
+                    break
 
-            t_start = time.time()
             response = RESPONSE_KEYS[key]
-            rt = round(time.time() - t_start, 3)
             correct = response == trial["elevation_label"]
 
             writer.writerow({
