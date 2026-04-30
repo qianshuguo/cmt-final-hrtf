@@ -12,8 +12,8 @@ data/
 assets/
 outputs/
 
-# Docs
-docs/
+# Materials
+materials/
 
 # Claude
 *claude*/
