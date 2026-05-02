@@ -1,7 +1,7 @@
 """
 prepare_source.py
-Convert audio files in data/source_audio/raw/ to mono, 15-second WAV stimuli
-with 0.5 s cosine fade-in and fade-out, saved to data/source_audio/processed/.
+Convert audio files in dataset/my_raw/ to mono, 15-second WAV stimuli
+with 0.5 s cosine fade-in and fade-out, saved to dataset/my_proc/.
 
 Usage:
     python src/prepare_source.py
@@ -12,9 +12,10 @@ import numpy as np
 import scipy.signal
 import soundfile as sf
 
-ROOT      = Path(__file__).parent.parent
-SRC_DIR   = ROOT / "assets/raw"
-OUT_DIR   = ROOT / "assets/processed"
+ROOT         = Path(__file__).parent.parent
+DATASET_ROOT = ROOT.parent / "dataset"
+SRC_DIR      = DATASET_ROOT / "my_raw"
+OUT_DIR      = DATASET_ROOT / "my_proc"
 SR        = 44100
 DURATION  = 15.0
 FADE      = 0.5

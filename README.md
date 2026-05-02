@@ -23,12 +23,11 @@ How does the choice of HRTF dataset (human vs. KEMAR dummy head) affect auditory
 │   ├── explore_hrtf.py       # (optional) visualize CIPIC HRIRs
 │   ├── render_binaural.py    # Step 2 – convolve audio with HRTFs
 │   └── run_experiment.py     # Step 3 – run listening test
-├── assets/
-│   ├── raw/                  # place raw audio files here
-│   └── processed/            # output of prepare_source.py
-├── data/
+├── ../dataset/
+│   ├── my_raw/               # place raw audio files here (external, not in repo)
+│   ├── my_proc/              # output of prepare_source.py (external, not in repo)
 │   └── cipic-hrtf-database-master/
-│       └── standard_hrir_database/   # CIPIC .mat files
+│       └── standard_hrir_database/   # CIPIC .mat files (external, not in repo)
 ├── outputs/
 │   ├── stimuli/              # rendered binaural WAV files
 │   └── figures/              # HRIR verification plots
@@ -87,7 +86,7 @@ conda env create -f env/environment.yml
 
 ### 2. Prepare source audio
 
-Place audio files (`.wav`, `.mp3`, `.aiff`, `.flac`, `.ogg`) in `assets/raw/`, then run:
+Place audio files (`.wav`, `.mp3`, `.aiff`, `.flac`, `.ogg`) in `../dataset/my_raw/`, then run:
 
 ```bash
 python src/prepare_source.py
@@ -98,7 +97,7 @@ This converts each file to **mono, 44 100 Hz, 15 s** with:
 - 0.5 s cosine fade-in and fade-out
 - Peak normalization
 
-Output goes to `assets/processed/`.
+Output goes to `../dataset/my_proc/`.
 
 ### 3. Render binaural stimuli
 

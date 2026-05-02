@@ -21,11 +21,12 @@ import scipy.signal
 import soundfile as sf
 import os
 
-ROOT = Path(__file__).parent.parent
+ROOT         = Path(__file__).parent.parent
+DATASET_ROOT = ROOT.parent / "dataset"
 
 # ── paths ─────────────────────────────────────────────────────────────────────
-CIPIC_ROOT  = ROOT / "data/cipic-hrtf-database-master/standard_hrir_database"
-PROCESSED   = ROOT / "assets/processed"
+CIPIC_ROOT  = DATASET_ROOT / "cipic-hrtf-database-master/standard_hrir_database"
+PROCESSED   = DATASET_ROOT / "my_proc"
 OUT_DIR     = ROOT / "outputs/stimuli"
 SR          = 44100
 

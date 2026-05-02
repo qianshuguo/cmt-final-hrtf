@@ -8,12 +8,7 @@ env/include/
 env/pyvenv.cfg
 
 # Project folders (large or generated)
-data/
-assets/
 outputs/
-
-# Materials
-materials/
 
 # Claude
 *claude*/
