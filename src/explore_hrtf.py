@@ -52,6 +52,7 @@ axes[1].axhline(0, color="gray", linewidth=0.5)
 
 plt.tight_layout()
 out_path = ROOT / "outputs/figures/hrtf_verification.png"
+out_path.parent.mkdir(parents=True, exist_ok=True)
 plt.savefig(out_path, dpi=150)
 print(f"\n✔ Plot saved to {out_path}")
 print("✔ HRTF data read successfully — Phase 1 complete!")
