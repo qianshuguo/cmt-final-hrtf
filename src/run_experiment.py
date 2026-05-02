@@ -1,9 +1,9 @@
 """
 Phase 3/4: Listening experiment runner
 --------------------------------------
-Scans outputs/stimuli/ for all rendered WAV files and plays them in
+Scans ../outputs/stimuli/ for all rendered WAV files and plays them in
 randomised order, collecting elevation responses.
-Results are saved to results/<participant_id>.csv.
+Results are saved to ../results/<participant_id>.csv.
 
 Controls during each trial:
   1  →  Up    (+51°)
@@ -22,10 +22,11 @@ from pathlib import Path
 
 import pygame
 
-ROOT = Path(__file__).parent.parent
+ROOT     = Path(__file__).parent.parent
+PROJ_ROOT = ROOT.parent
 
-STIMULI_DIR = ROOT / "outputs/stimuli"
-RESULTS_DIR = ROOT / "results"
+STIMULI_DIR = PROJ_ROOT / "outputs/stimuli"
+RESULTS_DIR = PROJ_ROOT / "results"
 
 ELEVATION_MAP = {"neg51": ("down", -51), "0": ("middle", 0), "pos51": ("up", 51)}
 DATASET_MAP   = {"cipic_human": "CIPIC Human", "cipic_kemar": "CIPIC KEMAR"}

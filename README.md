@@ -28,10 +28,10 @@ How does the choice of HRTF dataset (human vs. KEMAR dummy head) affect auditory
 │   ├── my_proc/              # output of prepare_source.py (external, not in repo)
 │   └── cipic-hrtf-database-master/
 │       └── standard_hrir_database/   # CIPIC .mat files (external, not in repo)
-├── outputs/
-│   ├── stimuli/              # rendered binaural WAV files
-│   └── figures/              # HRIR verification plots
-├── results/                  # per-participant CSV files
+├── ../outputs/
+│   ├── stimuli/              # rendered binaural WAV files (external, not in repo)
+│   └── figures/              # HRIR verification plots (external, not in repo)
+├── ../results/               # per-participant CSV files (external, not in repo)
 └── env/
     ├── requirements.txt
     └── environment.yml
