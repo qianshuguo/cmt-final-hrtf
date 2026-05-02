@@ -27,7 +27,7 @@ DATASET_ROOT = ROOT.parent / "dataset"
 # ── paths ─────────────────────────────────────────────────────────────────────
 CIPIC_ROOT  = DATASET_ROOT / "cipic-hrtf-database-master/standard_hrir_database"
 PROCESSED   = DATASET_ROOT / "my_proc"
-OUT_DIR     = ROOT.parent / "outputs/stimuli"
+OUT_DIR     = ROOT / "outputs/stimuli"
 SR          = 44100
 
 DATASETS = {

@@ -51,7 +51,7 @@ axes[1].set_title("Right Ear HRIR")
 axes[1].axhline(0, color="gray", linewidth=0.5)
 
 plt.tight_layout()
-out_path = ROOT.parent / "outputs/figures/hrtf_verification.png"
+out_path = ROOT / "outputs/figures/hrtf_verification.png"
 plt.savefig(out_path, dpi=150)
 print(f"\n✔ Plot saved to {out_path}")
 print("✔ HRTF data read successfully — Phase 1 complete!")
